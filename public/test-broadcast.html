@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Broadcast Test</title>
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+</head>
+<body style="font-family: sans-serif; padding: 40px;">
+    <h1>Listening for order updates...</h1>
+    <div id="log" style="background: #eee; padding: 20px; white-space: pre-wrap;"></div>
+
+    <script>
+        const REVERB_APP_KEY = '49mezyzbaiaizfszqibi';
+        const REVERB_HOST = 'localhost';
+        const REVERB_PORT = 8081;
+        const USER_ID = 3;
+        const AUTH_TOKEN = '1|KHcT7CvEAmysANi4kqjw4wJQsrHSQg9xMn8JGF5v81754646';
+
+        const log = (msg) => {
+            document.getElementById('log').textContent += msg + '\n';
+        };
+
+        Pusher.logToConsole = true;
+
+        const pusher = new Pusher(REVERB_APP_KEY, {
+            wsHost: REVERB_HOST,
+            wsPort: REVERB_PORT,
+            forceTLS: false,
+            enabledTransports: ['ws'],
+            cluster: 'mt1',
+            authEndpoint: 'http://api.local:8000/broadcasting/auth',
+            auth: {
+                headers: {
+                    Authorization: 'Bearer ' + AUTH_TOKEN,
+                    Accept: 'application/json',
+                }
+            }
+        });
+
+        pusher.connection.bind('connected', () => {
+            console.log('✅ WebSocket connected');
+            log('🔌 WebSocket connected');
+        });
+
+        pusher.connection.bind('error', (err) => {
+            log('❌ WebSocket error: ' + JSON.stringify(err));
+        });
+
+        pusher.connection.bind('disconnected', () => {
+            log('🔴 WebSocket disconnected');
+        });
+
+        const channel = pusher.subscribe('private-orders.' + USER_ID);
+
+        channel.bind('pusher:subscription_succeeded', () => {
+            log('✅ Connected and subscribed to user_id = ' + USER_ID);
+        });
+
+        channel.bind('pusher:subscription_error', (err) => {
+            log('❌ Subscription error: ' + JSON.stringify(err));
+        });
+
+        channel.bind('order.status.updated', (data) => {
+            log('🎉 Order Updated: ' + JSON.stringify(data, null, 2));
+        });
+    </script>
+</body>
+</html>
