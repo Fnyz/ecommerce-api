@@ -27,9 +27,8 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {
-
-        // ensure the IsAdmin middleware is registered so we can use it in our routes
         $middleware->alias(['admin' => \App\Http\Middleware\IsAdmin::class]);
+        $middleware->append(\App\Http\Middleware\ReadOnlyMode::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
