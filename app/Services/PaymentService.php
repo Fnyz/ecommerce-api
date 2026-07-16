@@ -37,8 +37,8 @@ class PaymentService
             'payment_method_types' => ['card'],
             'line_items' => $lineItems,
             'mode' => 'payment',
-            'success_url' => 'http://api.local:8000/api/payment/success?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => 'http://api.local:8000/api/payment/cancel',
+            'success_url' => 'https://ecommerce-api-o2nl.onrender.com/api/payment/success?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => 'https://ecommerce-api-o2nl.onrender.com/api/payment/cancel',
             'metadata' => [
                 'order_id' => $order->id,
                 'order_number' => $order->order_number,
