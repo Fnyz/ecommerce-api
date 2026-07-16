@@ -17,12 +17,6 @@ class ReadOnlyMode
         'api/v1/login',
         'api/v1/logout',
         'api/v1/stripe/webhook',
-        'api/v1/products',
-        'api/v1/categories',
-        'api/v1/carts',
-        'api/v1/orders',
-        'api/v1/admin/dashboard',
-        'api/v1/admin/orders',
     ];
 
     public function handle(Request $request, Closure $next): Response
